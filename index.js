@@ -19,7 +19,20 @@ server.addService(notesProto.NoteService.service,{
         note.id = uuidv1();
         notes.push(note)
         callback(null, note)
-    }	
+    },
+    delete:(call,callback) =>{
+	    let existingNoteID = notes.findIndex((n) => n.id == call.request.id)
+        if(existingNoteID != -1) {
+            notes.splice(existingNoteID, 1)
+            callback(null, {})
+        }
+        else{
+            callback({
+                code: grpc.status.NOT_FOUND,
+                details: "NoteID not found"
+            })
+        }
+    }
 })	
 server.bind(
 	'127.0.0.1:50051',
